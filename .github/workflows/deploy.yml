@@ -1,0 +1,32 @@
+name: Deploy to Cloud Run
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+      - uses: google-github-actions/deploy-cloudrun@v2
+        with:
+          service: svod-bot
+          region: ${{ vars.GCP_REGION || 'europe-west1' }}
+          project_id: ${{ secrets.GCP_PROJECT }}
+          source: .
+          secrets: |
+            TELEGRAM_TOKEN=telegram-token:latest
+            WEBHOOK_SECRET=webhook-secret:latest
+            ALLOWED_IDS=allowed-ids:latest
+          env_vars: |
+            REF_BUCKET=${{ vars.REF_BUCKET }}
+            REF_BLOB=ref.pkl
+          flags: >-
+            --memory=4Gi --cpu=2 --timeout=900 --concurrency=8
+            --max-instances=1 --min-instances=0 --no-cpu-throttling
+            --allow-unauthenticated

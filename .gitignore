@@ -1,0 +1,12 @@
+# Шахсий маълумотлар — ҳеч қачон репозиторийга тушмасин
+*.pkl
+!assets/mfy.pkl
+ref/
+out*/
+*.xlsx.calc.xlsx
+__pycache__/
+.env
+# Омбор файллари
+Омбор*.xlsx
+*ombor*.xlsx
+!assets/t*.xlsx
